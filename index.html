@@ -1,70 +1,77 @@
+
+HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inspect Pro V29</title>
+    <title>Mankato Pro V31</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; max-width: 600px; margin: auto; }
-        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; font-size: 1rem; text-transform: uppercase; margin: 0 0 15px 0; }
-        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; color: #7f8c8d; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-        .sig-wrapper { background: #eee; border: 1px solid #ddd; border-radius: 8px; touch-action: none; margin-bottom: 10px; }
+        :root { --navy: #1a2a3a; --blue: #3498db; --bg: #f0f2f5; --white: #ffffff; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--navy); padding: 15px; max-width: 600px; margin: auto; }
+        .card { background: var(--white); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-top: 6px solid var(--blue); }
+        h2 { font-size: 1rem; text-transform: uppercase; margin: 0 0 15px 0; color: var(--navy); border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        label { display: block; font-size: 0.7rem; font-weight: 800; margin-bottom: 5px; color: #7f8c8d; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; -webkit-appearance: none; }
+        .sig-box { background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; touch-action: none; margin-bottom: 10px; }
         canvas { width: 100%; height: 140px; display: block; }
-        .btn { border: none; padding: 20px; border-radius: 8px; font-weight: bold; width: 100%; color: white; cursor: pointer; font-size: 1.1rem; }
-        #reportArea { display: none; background: white; padding: 25px; border-radius: 12px; margin-top: 20px; border: 4px solid var(--primary); }
+        .btn { border: none; padding: 20px; border-radius: 10px; font-weight: bold; width: 100%; color: white; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
+        #reportArea { display: none; background: white; padding: 30px; border-radius: 12px; margin-top: 20px; border: 4px solid var(--navy); }
     </style>
 </head>
 <body>
 
-    <div id="input-form">
+    <div id="form-view">
         <div class="card">
-            <h2>🏠 Site & Client</h2>
-            <label>Client Name</label><input type="text" id="c_name" placeholder="John Doe">
-            <label>Property Address</label><input type="text" id="p_addr" placeholder="123 Main St">
-            <label>Primary Defect Photo</label><input type="file" id="f_photo" accept="image/*">
+            <h2>🏠 Project Details</h2>
+            <label>Client Name</label><input type="text" id="p_client" placeholder="Client Name">
+            <label>Property Address</label><input type="text" id="p_address" placeholder="123 Mankato Ave">
+            <label>Defect Photo</label><input type="file" accept="image/*">
         </div>
 
         <div class="card">
-            <h2>🔍 Exterior & Structure</h2>
-            <label>Siding / Trim</label>
-            <select id="v_siding"><option>Satisfactory</option><option>⚠️ Maintenance Required</option><option>🚨 Major Defect</option></select>
-            <label>Roofing</label>
-            <select id="v_roof"><option>Satisfactory</option><option>⚠️ Maintenance Required</option><option>🚨 Major Defect</option></select>
-            <label>Windows & Doors</label>
-            <select id="v_doors"><option>Satisfactory</option><option>⚠️ Action Required</option></select>
+            <h2>🌳 Grounds & Exterior</h2>
+            <label>Grading & Drainage</label>
+            <select id="f_grading"><option>Satisfactory</option><option>⚠️ Negative Grade</option><option>🚨 Water Entry Risk</option></select>
+            <label>Siding / Trim / Soffit</label>
+            <select id="f_siding"><option>Satisfactory</option><option>⚠️ Maintenance Required</option><option>🚨 Major Defect</option></select>
+            <label>Roofing Condition</label>
+            <select id="f_roof"><option>Satisfactory</option><option>⚠️ Wear/Age Noted</option><option>🚨 Active Leak</option></select>
         </div>
 
         <div class="card">
-            <h2>💧 Systems</h2>
-            <label>Plumbing / Waste</label>
-            <select id="v_plumb"><option>Satisfactory</option><option>⚠️ Leak/Repair Needed</option><option>🚨 Hazard</option></select>
-            <label>HVAC / Heating</label>
-            <select id="v_hvac"><option>Satisfactory</option><option>⚠️ Service Recommended</option><option>🚨 Non-Functional</option></select>
-            <label>Electrical</label>
-            <select id="v_elec"><option>Satisfactory</option><option>⚠️ Repairs Needed</option><option>🚨 Hazard: FPE/Zinsco</option></select>
+            <h2>🏠 Interior & Attic</h2>
+            <label>Attic (Insulation/Ventilation)</label>
+            <select id="f_attic"><option>Satisfactory</option><option>⚠️ Low Insulation</option><option>🚨 Moisture/Bypass Issues</option></select>
+            <label>Windows / Doors</label>
+            <select id="f_windows"><option>Satisfactory</option><option>⚠️ Seal Failure</option></select>
         </div>
 
         <div class="card">
-            <h2>📝 Inspector Notes</h2>
-            <textarea id="v_notes" rows="4" placeholder="Additional details here..."></textarea>
+            <h2>⚙️ Systems & Radon</h2>
+            <label>HVAC / Furnace / AC</label>
+            <select id="f_hvac"><option>Satisfactory</option><option>⚠️ Service Due</option><option>🚨 End of Life</option></select>
+            <label>Plumbing / Supply / Waste</label>
+            <select id="f_plumb"><option>Satisfactory</option><option>⚠️ Active Leak</option></select>
+            <label>Electrical System</label>
+            <select id="f_elec"><option>Satisfactory</option><option>⚠️ Repairs Needed</option><option>🚨 Hazard Found</option></select>
+            <label>Radon Mitigation/Test</label>
+            <select id="f_radon"><option>System Functional</option><option>⚠️ No System Present</option><option>🚨 Test Pending Results</option></select>
         </div>
 
         <div class="card">
             <h2>✍️ Signatures</h2>
-            <label>Inspector</label><div class="sig-wrapper"><canvas id="c_insp"></canvas></div>
-            <label>Client</label><div class="sig-wrapper"><canvas id="c_cli"></canvas></div>
+            <label>Inspector</label><div class="sig-box"><canvas id="c_insp"></canvas></div>
+            <label>Client Acceptance</label><div class="sig-box"><canvas id="c_cli"></canvas></div>
         </div>
 
         <button class="btn" style="background:#27ae60;" onclick="buildReport()">🛠 GENERATE SUMMARY</button>
     </div>
 
     <div id="reportArea">
-        <div id="out"></div>
-        <button class="btn" style="background:var(--primary); margin-top:20px;" onclick="window.print()">🖨 SAVE PDF</button>
-        <button class="btn" style="background:#95a5a6; margin-top:10px;" onclick="location.reload()">🔄 NEW INSPECTION</button>
+        <div id="reportOutput"></div>
+        <button class="btn" style="background:var(--navy); margin-top:20px;" onclick="window.print()">🖨 SAVE AS PDF</button>
+        <button class="btn" style="background:#95a5a6; margin-top:10px;" onclick="location.reload()">🔄 START NEW</button>
     </div>
 
     <script>
@@ -82,27 +89,22 @@
         setup("c_insp"); setup("c_cli");
 
         function buildReport() {
-            const data = {
-                n: document.getElementById('c_name').value,
-                a: document.getElementById('p_addr').value,
-                s: document.getElementById('v_siding').value,
-                r: document.getElementById('v_roof').value,
-                d: document.getElementById('v_doors').value,
-                p: document.getElementById('v_plumb').value,
-                h: document.getElementById('v_hvac').value,
-                e: document.getElementById('v_elec').value,
-                m: document.getElementById('v_notes').value
-            };
-
-            document.getElementById('out').innerHTML = `
-                <h1 style="text-align:center">Field Summary</h1>
-                <p><strong>Client:</strong> ${data.n}</p><p><strong>Site:</strong> ${data.a}</p><hr>
-                <p><strong>Siding:</strong> ${data.s}</p><p><strong>Roof:</strong> ${data.r}</p>
-                <p><strong>Doors/Windows:</strong> ${data.d}</p><p><strong>Plumbing:</strong> ${data.p}</p>
-                <p><strong>HVAC:</strong> ${data.h}</p><p><strong>Electrical:</strong> ${data.e}</p>
-                <p><strong>Notes:</strong> ${data.m}</p>
+            const html = `
+                <h1 style="text-align:center">Field Inspection Summary</h1>
+                <p><strong>Client:</strong> ${document.getElementById('p_client').value}</p>
+                <p><strong>Address:</strong> ${document.getElementById('p_address').value}</p>
+                <hr>
+                <p><strong>Grounds/Grading:</strong> ${document.getElementById('f_grading').value}</p>
+                <p><strong>Roofing:</strong> ${document.getElementById('f_roof').value}</p>
+                <p><strong>Attic:</strong> ${document.getElementById('f_attic').value}</p>
+                <p><strong>HVAC:</strong> ${document.getElementById('f_hvac').value}</p>
+                <p><strong>Plumbing:</strong> ${document.getElementById('f_plumb').value}</p>
+                <p><strong>Electrical:</strong> ${document.getElementById('f_elec').value}</p>
+                <p><strong>Radon:</strong> ${document.getElementById('f_radon').value}</p>
+                <p><small>Date: ${new Date().toLocaleString()}</small></p>
             `;
-            document.getElementById('input-form').style.display = 'none';
+            document.getElementById('reportOutput').innerHTML = html;
+            document.getElementById('form-view').style.display = 'none';
             document.getElementById('reportArea').style.display = 'block';
             window.scrollTo(0,0);
         }
