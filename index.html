@@ -3,135 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inspect Pro V27</title>
+    <title>Inspect Pro V28</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --bg: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--primary); padding: 15px; max-width: 600px; margin: auto; }
-        
-        /* Form Styling - This is your "Work Mode" */
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; max-width: 600px; margin: auto; }
         .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; font-size: 1rem; text-transform: uppercase; margin-top: 0; }
-        label { display: block; font-size: 0.8rem; font-weight: bold; margin-top: 10px; color: #7f8c8d; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 5px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-        
-        /* Signature Area */
-        .sig-wrapper { background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; touch-action: none; }
+        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; font-size: 1rem; text-transform: uppercase; margin: 0 0 15px 0; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #7f8c8d; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        .sig-wrapper { background: #eee; border: 1px solid #ddd; border-radius: 8px; touch-action: none; margin-bottom: 10px; }
         canvas { width: 100%; height: 150px; display: block; }
-        
-        .btn { border: none; padding: 18px; border-radius: 8px; font-weight: bold; width: 100%; color: white; cursor: pointer; font-size: 1rem; }
-        .btn-gen { background: var(--success); }
-        
-        /* The Report Area - Hidden until you click Generate */
-        #reportArea { display: none; background: white; padding: 25px; border-radius: 12px; margin-top: 20px; border: 3px solid var(--primary); }
-        .preview-img { width: 100%; border-radius: 8px; margin-top: 10px; display: none; }
+        .btn { border: none; padding: 20px; border-radius: 8px; font-weight: bold; width: 100%; color: white; cursor: pointer; font-size: 1.1rem; margin-top: 10px; }
+        #reportArea { display: none; background: white; padding: 25px; border-radius: 12px; margin-top: 20px; border: 4px solid var(--primary); }
+        .preview-img { width: 100%; border-radius: 8px; display: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="entryForm">
+    <div id="main-form">
         <div class="card">
-            <h2>1. Site Information</h2>
+            <h2>🏠 Site Details</h2>
             <label>Client Name</label>
-            <input type="text" id="c_name" placeholder="Enter Client Name">
-            
+            <input type="text" id="c_name" placeholder="Who is the client?">
             <label>Property Address</label>
-            <input type="text" id="p_addr" placeholder="123 Mankato St">
-
-            <label>Defect Photo (Optional)</label>
-            <input type="file" id="photo_input" accept="image/*" onchange="previewPhoto(event)">
-            <img id="photo_preview" class="preview-img">
+            <input type="text" id="p_addr" placeholder="Street, City, Zip">
+            <label>Defect Photo</label>
+            <input type="file" id="photo_in" accept="image/*" onchange="showImg(event)">
+            <img id="prev" class="preview-img">
         </div>
 
         <div class="card">
-            <h2>2. System Findings</h2>
+            <h2>🔍 System Findings</h2>
+            <label>Roof / Exterior</label>
+            <select id="roof_val">
+                <option value="Satisfactory">Satisfactory</option>
+                <option value="⚠️ Maintenance Required">Maintenance Required</option>
+                <option value="🚨 Major Defect">Major Defect</option>
+            </select>
+
             <label>Electrical System</label>
-            <select id="elec_stat">
+            <select id="elec_val">
                 <option value="Satisfactory">Satisfactory</option>
                 <option value="⚠️ Action Required">Action Required</option>
                 <option value="🚨 HAZARD: FPE Panel">HAZARD: FPE Panel</option>
             </select>
 
-            <label>Inspector Comments</label>
-            <textarea id="comments" rows="3" placeholder="Notes on defects..."></textarea>
+            <label>General Notes</label>
+            <textarea id="notes" rows="4" placeholder="Type or dictate findings here..."></textarea>
         </div>
 
         <div class="card">
-            <h2>3. Signatures</h2>
-            <label>Inspector</label>
-            <div class="sig-wrapper"><canvas id="sig-insp"></canvas></div>
-            <label style="margin-top:15px;">Client Acceptance</label>
-            <div class="sig-wrapper"><canvas id="sig-cli"></canvas></div>
+            <h2>✍️ Signatures</h2>
+            <label>Inspector Signature</label>
+            <div class="sig-wrapper"><canvas id="s-insp"></canvas></div>
+            <label>Client Acceptance</label>
+            <div class="sig-wrapper"><canvas id="s-cli"></canvas></div>
         </div>
 
-        <button class="btn btn-gen" onclick="generateReport()">🛠 GENERATE FINAL SUMMARY</button>
+        <button class="btn" style="background:#27ae60;" onclick="makeReport()">🛠 GENERATE SUMMARY REPORT</button>
     </div>
 
     <div id="reportArea">
-        <div id="reportContent"></div>
-        <img id="report_photo" style="width:100%; margin: 15px 0; border-radius: 5px;">
-        <button class="btn" style="background:var(--primary)" onclick="window.print()">🖨 SAVE/SEND PDF</button>
-        <button class="btn" style="background:#95a5a6; margin-top:10px;" onclick="location.reload()">🔄 START NEW INSPECTION</button>
+        <div id="print-content"></div>
+        <img id="final-photo" style="width:100%; border-radius:8px; margin: 15px 0;">
+        <button class="btn" style="background:var(--primary)" onclick="window.print()">🖨 SAVE AS PDF</button>
+        <button class="btn" style="background:#95a5a6; margin-top:10px;" onclick="location.reload()">🔄 START NEW</button>
     </div>
 
     <script>
-        // Photo Preview Logic
-        function previewPhoto(event) {
+        function showImg(e) {
             const reader = new FileReader();
-            reader.onload = function(){
-                const output = document.getElementById('photo_preview');
-                output.src = reader.result;
-                output.style.display = 'block';
+            reader.onload = () => { 
+                const p = document.getElementById('prev');
+                p.src = reader.result; p.style.display = 'block'; 
             };
-            reader.readAsDataURL(event.target.files[0]);
+            reader.readAsDataURL(e.target.files[0]);
         }
 
-        // Signature Setup
-        function initSig(id) {
-            const canvas = document.getElementById(id);
-            const ctx = canvas.getContext("2d");
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            let drawing = false;
-            const getPos = (e) => {
-                const r = canvas.getBoundingClientRect();
-                const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-                const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-                return {x, y};
+        function setup(id) {
+            const c = document.getElementById(id);
+            const x = c.getContext("2d");
+            c.width = c.offsetWidth; c.height = c.offsetHeight;
+            let d = false;
+            const p = (e) => {
+                const r = c.getBoundingClientRect();
+                return { x: (e.touches ? e.touches[0].clientX : e.clientX) - r.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - r.top };
             };
-            const start = (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y); };
-            const move = (e) => { if(drawing) { ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke(); } };
-            canvas.addEventListener("touchstart", (e) => { e.preventDefault(); start(e); });
-            canvas.addEventListener("touchmove", (e) => { e.preventDefault(); move(e); });
-            window.addEventListener("touchend", () => drawing = false);
-            canvas.addEventListener("mousedown", start);
-            canvas.addEventListener("mousemove", move);
+            const s = (e) => { d = true; x.beginPath(); x.moveTo(p(e).x, p(e).y); };
+            const m = (e) => { if(d) { x.lineTo(p(e).x, p(e).y); x.stroke(); } };
+            c.addEventListener("touchstart", (e) => { e.preventDefault(); s(e); });
+            c.addEventListener("touchmove", (e) => { e.preventDefault(); m(e); });
+            window.addEventListener("touchend", () => d = false);
+            c.addEventListener("mousedown", s);
+            c.addEventListener("mousemove", m);
         }
 
-        initSig("sig-insp");
-        initSig("sig-cli");
+        setup("s-insp"); setup("s-cli");
 
-        function generateReport() {
-            const name = document.getElementById('c_name').value || "Client";
-            const addr = document.getElementById('p_addr').value || "Address";
-            const elec = document.getElementById('elec_stat').value;
-            const comm = document.getElementById('comments').value || "No additional comments.";
-            const photo = document.getElementById('photo_preview').src;
+        function makeReport() {
+            const n = document.getElementById('c_name').value || "Client";
+            const a = document.getElementById('p_addr').value || "Address";
+            const r = document.getElementById('roof_val').value;
+            const e = document.getElementById('elec_val').value;
+            const msg = document.getElementById('notes').value;
+            const img = document.getElementById('prev').src;
 
-            // Build the Report
-            document.getElementById('reportContent').innerHTML = `
-                <h1 style="text-align:center">Field Inspection Summary</h1>
-                <p><strong>Client:</strong> ${name}</p>
-                <p><strong>Property:</strong> ${addr}</p>
-                <hr>
-                <p><strong>Electrical Finding:</strong> ${elec}</p>
-                <p><strong>Notes:</strong> ${comm}</p>
-                <p><small>Generated on: ${new Date().toLocaleString()}</small></p>
+            document.getElementById('print-content').innerHTML = `
+                <h1 style="text-align:center">Field Summary Report</h1>
+                <p><strong>Client:</strong> ${n}</p><p><strong>Site:</strong> ${a}</p><hr>
+                <p><strong>Roof:</strong> ${r}</p><p><strong>Electrical:</strong> ${e}</p>
+                <p><strong>Notes:</strong> ${msg}</p>
+                <p><small>Date: ${new Date().toLocaleString()}</small></p>
             `;
-
-            if(photo) document.getElementById('report_photo').src = photo;
-
-            // Switch Views
-            document.getElementById('entryForm').style.display = 'none';
+            if(img) document.getElementById('final-photo').src = img;
+            document.getElementById('main-form').style.display = 'none';
             document.getElementById('reportArea').style.display = 'block';
             window.scrollTo(0,0);
         }
