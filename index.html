@@ -3,120 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inspect Pro V28</title>
+    <title>Inspect Pro V29</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; max-width: 600px; margin: auto; }
         .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         h2 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; font-size: 1rem; text-transform: uppercase; margin: 0 0 15px 0; }
-        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #7f8c8d; }
+        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; color: #7f8c8d; text-transform: uppercase; }
         input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
         .sig-wrapper { background: #eee; border: 1px solid #ddd; border-radius: 8px; touch-action: none; margin-bottom: 10px; }
-        canvas { width: 100%; height: 150px; display: block; }
-        .btn { border: none; padding: 20px; border-radius: 8px; font-weight: bold; width: 100%; color: white; cursor: pointer; font-size: 1.1rem; margin-top: 10px; }
+        canvas { width: 100%; height: 140px; display: block; }
+        .btn { border: none; padding: 20px; border-radius: 8px; font-weight: bold; width: 100%; color: white; cursor: pointer; font-size: 1.1rem; }
         #reportArea { display: none; background: white; padding: 25px; border-radius: 12px; margin-top: 20px; border: 4px solid var(--primary); }
-        .preview-img { width: 100%; border-radius: 8px; display: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="main-form">
+    <div id="input-form">
         <div class="card">
-            <h2>🏠 Site Details</h2>
-            <label>Client Name</label>
-            <input type="text" id="c_name" placeholder="Who is the client?">
-            <label>Property Address</label>
-            <input type="text" id="p_addr" placeholder="Street, City, Zip">
-            <label>Defect Photo</label>
-            <input type="file" id="photo_in" accept="image/*" onchange="showImg(event)">
-            <img id="prev" class="preview-img">
+            <h2>🏠 Site & Client</h2>
+            <label>Client Name</label><input type="text" id="c_name" placeholder="John Doe">
+            <label>Property Address</label><input type="text" id="p_addr" placeholder="123 Main St">
+            <label>Primary Defect Photo</label><input type="file" id="f_photo" accept="image/*">
         </div>
 
         <div class="card">
-            <h2>🔍 System Findings</h2>
-            <label>Roof / Exterior</label>
-            <select id="roof_val">
-                <option value="Satisfactory">Satisfactory</option>
-                <option value="⚠️ Maintenance Required">Maintenance Required</option>
-                <option value="🚨 Major Defect">Major Defect</option>
-            </select>
+            <h2>🔍 Exterior & Structure</h2>
+            <label>Siding / Trim</label>
+            <select id="v_siding"><option>Satisfactory</option><option>⚠️ Maintenance Required</option><option>🚨 Major Defect</option></select>
+            <label>Roofing</label>
+            <select id="v_roof"><option>Satisfactory</option><option>⚠️ Maintenance Required</option><option>🚨 Major Defect</option></select>
+            <label>Windows & Doors</label>
+            <select id="v_doors"><option>Satisfactory</option><option>⚠️ Action Required</option></select>
+        </div>
 
-            <label>Electrical System</label>
-            <select id="elec_val">
-                <option value="Satisfactory">Satisfactory</option>
-                <option value="⚠️ Action Required">Action Required</option>
-                <option value="🚨 HAZARD: FPE Panel">HAZARD: FPE Panel</option>
-            </select>
+        <div class="card">
+            <h2>💧 Systems</h2>
+            <label>Plumbing / Waste</label>
+            <select id="v_plumb"><option>Satisfactory</option><option>⚠️ Leak/Repair Needed</option><option>🚨 Hazard</option></select>
+            <label>HVAC / Heating</label>
+            <select id="v_hvac"><option>Satisfactory</option><option>⚠️ Service Recommended</option><option>🚨 Non-Functional</option></select>
+            <label>Electrical</label>
+            <select id="v_elec"><option>Satisfactory</option><option>⚠️ Repairs Needed</option><option>🚨 Hazard: FPE/Zinsco</option></select>
+        </div>
 
-            <label>General Notes</label>
-            <textarea id="notes" rows="4" placeholder="Type or dictate findings here..."></textarea>
+        <div class="card">
+            <h2>📝 Inspector Notes</h2>
+            <textarea id="v_notes" rows="4" placeholder="Additional details here..."></textarea>
         </div>
 
         <div class="card">
             <h2>✍️ Signatures</h2>
-            <label>Inspector Signature</label>
-            <div class="sig-wrapper"><canvas id="s-insp"></canvas></div>
-            <label>Client Acceptance</label>
-            <div class="sig-wrapper"><canvas id="s-cli"></canvas></div>
+            <label>Inspector</label><div class="sig-wrapper"><canvas id="c_insp"></canvas></div>
+            <label>Client</label><div class="sig-wrapper"><canvas id="c_cli"></canvas></div>
         </div>
 
-        <button class="btn" style="background:#27ae60;" onclick="makeReport()">🛠 GENERATE SUMMARY REPORT</button>
+        <button class="btn" style="background:#27ae60;" onclick="buildReport()">🛠 GENERATE SUMMARY</button>
     </div>
 
     <div id="reportArea">
-        <div id="print-content"></div>
-        <img id="final-photo" style="width:100%; border-radius:8px; margin: 15px 0;">
-        <button class="btn" style="background:var(--primary)" onclick="window.print()">🖨 SAVE AS PDF</button>
-        <button class="btn" style="background:#95a5a6; margin-top:10px;" onclick="location.reload()">🔄 START NEW</button>
+        <div id="out"></div>
+        <button class="btn" style="background:var(--primary); margin-top:20px;" onclick="window.print()">🖨 SAVE PDF</button>
+        <button class="btn" style="background:#95a5a6; margin-top:10px;" onclick="location.reload()">🔄 NEW INSPECTION</button>
     </div>
 
     <script>
-        function showImg(e) {
-            const reader = new FileReader();
-            reader.onload = () => { 
-                const p = document.getElementById('prev');
-                p.src = reader.result; p.style.display = 'block'; 
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-
         function setup(id) {
-            const c = document.getElementById(id);
-            const x = c.getContext("2d");
+            const c = document.getElementById(id); const x = c.getContext("2d");
             c.width = c.offsetWidth; c.height = c.offsetHeight;
             let d = false;
-            const p = (e) => {
-                const r = c.getBoundingClientRect();
-                return { x: (e.touches ? e.touches[0].clientX : e.clientX) - r.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - r.top };
-            };
-            const s = (e) => { d = true; x.beginPath(); x.moveTo(p(e).x, p(e).y); };
-            const m = (e) => { if(d) { x.lineTo(p(e).x, p(e).y); x.stroke(); } };
-            c.addEventListener("touchstart", (e) => { e.preventDefault(); s(e); });
-            c.addEventListener("touchmove", (e) => { e.preventDefault(); m(e); });
+            const p = (e) => { const r = c.getBoundingClientRect(); return { x: (e.touches ? e.touches[0].clientX : e.clientX) - r.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - r.top }; };
+            c.addEventListener("touchstart", (e) => { e.preventDefault(); d = true; x.beginPath(); x.moveTo(p(e).x, p(e).y); });
+            c.addEventListener("touchmove", (e) => { e.preventDefault(); if(d) { x.lineTo(p(e).x, p(e).y); x.stroke(); } });
             window.addEventListener("touchend", () => d = false);
-            c.addEventListener("mousedown", s);
-            c.addEventListener("mousemove", m);
+            c.addEventListener("mousedown", (e) => { d = true; x.beginPath(); x.moveTo(p(e).x, p(e).y); });
+            c.addEventListener("mousemove", (e) => { if(d) { x.lineTo(p(e).x, p(e).y); x.stroke(); } });
         }
+        setup("c_insp"); setup("c_cli");
 
-        setup("s-insp"); setup("s-cli");
+        function buildReport() {
+            const data = {
+                n: document.getElementById('c_name').value,
+                a: document.getElementById('p_addr').value,
+                s: document.getElementById('v_siding').value,
+                r: document.getElementById('v_roof').value,
+                d: document.getElementById('v_doors').value,
+                p: document.getElementById('v_plumb').value,
+                h: document.getElementById('v_hvac').value,
+                e: document.getElementById('v_elec').value,
+                m: document.getElementById('v_notes').value
+            };
 
-        function makeReport() {
-            const n = document.getElementById('c_name').value || "Client";
-            const a = document.getElementById('p_addr').value || "Address";
-            const r = document.getElementById('roof_val').value;
-            const e = document.getElementById('elec_val').value;
-            const msg = document.getElementById('notes').value;
-            const img = document.getElementById('prev').src;
-
-            document.getElementById('print-content').innerHTML = `
-                <h1 style="text-align:center">Field Summary Report</h1>
-                <p><strong>Client:</strong> ${n}</p><p><strong>Site:</strong> ${a}</p><hr>
-                <p><strong>Roof:</strong> ${r}</p><p><strong>Electrical:</strong> ${e}</p>
-                <p><strong>Notes:</strong> ${msg}</p>
-                <p><small>Date: ${new Date().toLocaleString()}</small></p>
+            document.getElementById('out').innerHTML = `
+                <h1 style="text-align:center">Field Summary</h1>
+                <p><strong>Client:</strong> ${data.n}</p><p><strong>Site:</strong> ${data.a}</p><hr>
+                <p><strong>Siding:</strong> ${data.s}</p><p><strong>Roof:</strong> ${data.r}</p>
+                <p><strong>Doors/Windows:</strong> ${data.d}</p><p><strong>Plumbing:</strong> ${data.p}</p>
+                <p><strong>HVAC:</strong> ${data.h}</p><p><strong>Electrical:</strong> ${data.e}</p>
+                <p><strong>Notes:</strong> ${data.m}</p>
             `;
-            if(img) document.getElementById('final-photo').src = img;
-            document.getElementById('main-form').style.display = 'none';
+            document.getElementById('input-form').style.display = 'none';
             document.getElementById('reportArea').style.display = 'block';
             window.scrollTo(0,0);
         }
